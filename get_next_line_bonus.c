@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: osallak <osallak@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/12/07 21:00:52 by messalih          #+#    #+#             */
-/*   Updated: 2021/12/09 01:03:34 by osallak          ###   ########.fr       */
+/*   Created: 2021/12/07 21:07:12 by messalih          #+#    #+#             */
+/*   Updated: 2021/12/09 01:04:23 by osallak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 static char	*get_remainder(char *buffer)
 {
@@ -29,40 +29,40 @@ static char	*get_remainder(char *buffer)
 	remainder = malloc((ft_strlen(buffer) - i) * sizeof(char) + 1);
 	if (!remainder)
 		return (NULL);
-	while (buffer[i] != '\0')
+	while (buffer[i])
 		remainder[j++] = buffer[i++];
 	remainder[j] = '\0';
 	return (free(buffer), remainder);
 }
 
-static	char	*get_line(char *buffer)
+static char	*get_line(char *remainder)
 {
 	int		i;
-	char	*str;
+	char	*line;
 
 	i = 0;
-	if (!*buffer)
+	if (!*remainder)
 		return (NULL);
-	while (buffer[i] != '\n' && buffer[i])
+	while (remainder[i] != '\n' && remainder[i])
 		i++;
-	if (buffer[i] == '\n')
+	if (remainder[i] == '\n')
 		i++;
-	str = malloc(i * sizeof(char) + 1);
-	if (!str)
+	line = malloc(i * sizeof(char) + 1);
+	if (!line)
 		return (NULL);
 	i = 0;
-	while (buffer[i] != '\n' && buffer[i] != '\0')
+	while (remainder[i] != '\n' && remainder[i])
 	{
-		str[i] = buffer[i];
+		line[i] = remainder[i];
 		i++;
 	}
-	if (buffer[i] == '\n')
-		str[i++] = '\n';
-	str[i] = '\0';
-	return (str);
+	if (remainder[i] == '\n')
+		line[i++] = '\n';
+	line[i] = '\0';
+	return (line);
 }
 
-static	char	*read_buff(int fd, char *remainder)
+char	*read_buffer(int fd, char *remainder)
 {
 	char	*buff;
 	int		i;
@@ -84,16 +84,16 @@ static	char	*read_buff(int fd, char *remainder)
 
 char	*get_next_line(int fd)
 {
-	static char	*remainder;
+	static char	*remainder[65535];
 	char		*line;
 
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
-	if (!ft_strchr(remainder, '\n'))
-		remainder = read_buff(fd, remainder);
-	if (!remainder)
+	if (!ft_strchr(remainder[fd], '\n'))
+		remainder[fd] = read_buffer(fd, remainder[fd]);
+	if (!remainder[fd])
 		return (NULL);
-	line = get_line(remainder);
-	remainder = get_remainder(remainder);
+	line = get_line(remainder[fd]);
+	remainder[fd] = get_remainder(remainder[fd]);
 	return (line);
 }
