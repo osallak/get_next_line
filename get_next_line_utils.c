@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line_utils.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: osallak <osallak@student.1337.ma>          +#+  +:+       +#+        */
+/*   By: osallak <osallak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/07 20:39:33 by messalih          #+#    #+#             */
-/*   Updated: 2021/12/09 19:03:41 by osallak          ###   ########.fr       */
+/*   Updated: 2022/02/28 13:57:22 by osallak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,11 @@ char	*ft_strjoin(char *s1, char *s2)
 	if (!s1)
 	{
 		s1 = (char *)malloc(1 * sizeof(char));
+		if (!s1)
+		{
+			perror(NULL);
+			exit(0);
+		}
 		s1[0] = '\0';
 	}
 	len = ft_strlen(s1);
